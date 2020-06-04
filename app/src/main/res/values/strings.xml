@@ -4,4 +4,7 @@
     <string name="enterName">Please enter your name</string>
     <string name="name">Name</string>
     <string name="start">Start</string>
+    <string name="nextQ">go to next question</string>
+    <string name="submit">submit</string>
+    <string name="finish">finish</string>
 </resources>
