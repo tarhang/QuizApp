@@ -7,4 +7,7 @@
     <string name="nextQ">go to next question</string>
     <string name="submit">submit</string>
     <string name="finish">finish</string>
+    <string name="result">Result</string>
+    <string name="congrats">Congratulations!</string>
+    <string name="image">image</string>
 </resources>
