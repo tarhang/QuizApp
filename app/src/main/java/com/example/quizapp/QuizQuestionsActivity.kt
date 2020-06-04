@@ -1,5 +1,6 @@
 package com.example.quizapp
 
+import android.content.Intent
 import android.graphics.Typeface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -12,8 +13,10 @@ import kotlinx.android.synthetic.main.activity_quiz_questions.*
 class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
 
     private var questionsList: ArrayList<Question>? = null
-    private var currentQuestion = 1
-    private var selectedAnswer = 0
+    private var currentQuestion: Int = 1
+    private var selectedAnswer: Int = 0
+    private var score = 0
+    private var userName: String? = null
     private val options = ArrayList<TextView>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,6 +24,7 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
         setContentView(R.layout.activity_quiz_questions)
         this.questionsList = Constants.getQuestions()
         this.displayNewQuestion()
+        this.userName = intent.getStringExtra(Constants.USER_NAME)
 
         // adding text views to the list of text views (options to select)
         this.options.add(tvOption1)
@@ -95,12 +99,15 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
                 val correctAnswer = this.questionsList!![currentQuestion - 1].correctAnswer
                 val tvSelected = this.options[selectedAnswer - 1]
                 val tvCorrect = this.options[correctAnswer - 1]
-                this.selectedAnswer = 0
 
                 if (this.selectedAnswer != correctAnswer) {
                     this.changeOptionToAnswer(tvSelected, R.drawable.incorrect_option)
+                } else {
+                    this.score += 1
                 }
                 this.changeOptionToAnswer(tvCorrect, R.drawable.correct_option)
+                this.selectedAnswer = 0
+
                 if (this.currentQuestion < this.questionsList!!.size) {
                     btnSubmit.text = getString(R.string.nextQ)
                 }
@@ -113,7 +120,12 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
                     this.currentQuestion += 1
                     this.displayNewQuestion()
                 } else {
-                    Toast.makeText(this, "Quiz Finished!", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, ResultActivity::class.java)
+                    intent.putExtra(Constants.USER_NAME, this.userName)
+                    intent.putExtra(Constants.SCORE, this.score)
+                    intent.putExtra(Constants.TOTAL_QUESTIONS, this.questionsList!!.size)
+                    startActivity(intent)
+                    finish()
                 }
             }
 
