@@ -1,5 +1,6 @@
 package com.example.quizapp
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
 import androidx.appcompat.app.AppCompatActivity
@@ -15,7 +16,7 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
     private var questionsList: ArrayList<Question>? = null
     private var currentQuestion: Int = 1
     private var selectedAnswer: Int = 0
-    private var score = 0
+    private var answersCorrectness: ArrayList<Int>? = null
     private var userName: String? = null
     private val options = ArrayList<TextView>()
 
@@ -23,6 +24,7 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_quiz_questions)
         this.questionsList = Constants.getQuestions()
+        this.answersCorrectness = ArrayList()
         this.displayNewQuestion()
         this.userName = intent.getStringExtra(Constants.USER_NAME)
 
@@ -103,7 +105,9 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
                 if (this.selectedAnswer != correctAnswer) {
                     this.changeOptionToAnswer(tvSelected, R.drawable.incorrect_option)
                 } else {
-                    this.score += 1
+                    if (this.answersCorrectness!!.size < this.currentQuestion) {
+                        this.answersCorrectness!!.add(1)
+                    }
                 }
                 this.changeOptionToAnswer(tvCorrect, R.drawable.correct_option)
                 this.selectedAnswer = 0
@@ -122,7 +126,7 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
                 } else {
                     val intent = Intent(this, ResultActivity::class.java)
                     intent.putExtra(Constants.USER_NAME, this.userName)
-                    intent.putExtra(Constants.SCORE, this.score)
+                    intent.putExtra(Constants.SCORE, this.answersCorrectness!!.sum())
                     intent.putExtra(Constants.TOTAL_QUESTIONS, this.questionsList!!.size)
                     startActivity(intent)
                     finish()
